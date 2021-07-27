@@ -1,5 +1,19 @@
+const { json } = require('body-parser');
+var generator = require('../utill/generator')
+var memstorage = require('../utill/memory_storage')
+
+
 exports.getAllNotes = (req , res)=>{
-    res.send("get all notes ya 7ag");
+    var seqId   = generator.generate();      
+    memstorage.store.setItem(seqId,"1st key ..."); 
+    var seqId_2   = generator.generate();   
+    memstorage.store.setItem(seqId_2,"2nd key ...");
+    
+    var keys = memstorage.getkeys(memstorage.store);
+    var values = memstorage.getValues(memstorage.store);
+    console.log("Values = "+ JSON.stringify(values));// => AAB - 001
+    // => AAB - 001
+    res.send("get all notes keys "+JSON.stringify(keys));
 }
 
 exports.saveNotes = (req , res)=>{
