@@ -18,7 +18,7 @@ exports.saveNotes = (req , res)=>{
     var ctreatedOn =new Date();      
 
     var title =req.body.title;        
-    if (!title | !content){
+    if (!title || !content){
         return res.status(500).send({ error: "title and content shouldn't be empty"})
 
     }  
@@ -28,9 +28,41 @@ exports.saveNotes = (req , res)=>{
 }
 
 exports.updateNote = (req , res)=>{
-    res.send("Updated note  ya 7ag");
+    var noteId =req.body.noteId;
+    var title =req.body.title;
+    var content =req.body.content;
+    var ctreatedBy ="admin";      
+    var ctreatedOn =new Date();  
+
+    if(!noteId){ 
+        return res.status(500).send({ error: "Note ID shouldn't be empty"})}
+    if (!title || !content){
+        return res.status(500).send({ error: "title and content shouldn't be empty"})}
+    
+       var noteItem=  memstorage.store.getItem(noteId);
+       if(!noteItem)
+       {
+        return res.status(500).send({ error: "Note ID is not exists"})}
+
+    var Note = model.Note;
+    var noteobj = Note(noteId , title, content, ctreatedBy ,ctreatedOn);  
+    memstorage.store.setItem(noteId,noteobj); 
+    return res.status(200).send("update note successfully");
 }
 
 exports.deleteNote = (req , res)=>{
-    res.send("Deleted note  ya 7ag");
+    var noteId = req.params.noteId;
+    if(!noteId)
+    { 
+        return res.status(500).send({ error: "Note ID shouldn't be empty"})
+    }
+
+    var noteItem=  memstorage.store.getItem(noteId);
+
+    if(!noteItem)
+    {
+     return res.status(500).send({ error: "Note ID is not exists"})
+    }
+    memstorage.store.removeItem(noteId); 
+    return res.status(200).send("Deleted note successfully");
 }
